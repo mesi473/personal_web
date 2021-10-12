@@ -85,26 +85,47 @@ import auction43 from './images/online auction system/43.png';
 import auction44 from './images/online auction system/44.png';
 import auction45 from './images/online auction system/45.png';
 import auction46 from './images/online auction system/46.png';
+import Mongodb from './images/mongodb.png';
+import material from './images/materail ui.png';
+import graphql from './images/graphql.png';
+import angular from './images/angular.png';
+import php from './images/php.png';
+import webdesign from './images/web design.png';
 import {
   Dialog,
 
 } from '@material-ui/core';
- 
+import { Alert } from '@material-ui/lab';
+import { Document, Page } from 'react-pdf';
+import PDF from './images/meseret kifle cv new.pdf';
+
+
+
 
 
 
 import { Helmet } from "react-helmet";
 function App() {
   const [open, setOpen] = React.useState(false);
-  const [state,setState]= React.useState({
-    email:'',
-    message:'',
+  const [state, setState] = React.useState({
+    email: '',
+    message: '',
   })
   React.useEffect(() => {
     window.addEventListener('scroll', function () {
       var header = document.getElementsByClassName("header");
       header[0].classList.toggle('sticky', window.scrollY > 0);
     });
+    setTimeout(() => {
+      setDeliver({
+        message: "",
+        type: ""
+      });
+      setDeliver2({
+        message: "",
+        type: ""
+      });
+    }, 10000);
   });
   const openImageViewer = React.useCallback((index, which) => {
     setCurrentImage(index);
@@ -119,6 +140,8 @@ function App() {
   const [whichImage, setWhichImage] = React.useState('');
   const [currentImage, setCurrentImage] = React.useState(0);
   const [isViewerOpen, setIsViewerOpen] = React.useState(false);
+  const [subscribe, setSubscribe] = React.useState("");
+  const [emailsub, setEmailsub] = React.useState({ message: '', hasError: false })
   const images = [
     auction1, auction2, auction3, auction4, auction5, auction6, auction7, auction10, auction10, auction11, auction12, auction13, auction14, auction15, auction16, auction17, auction18, auction19, auction20, auction21, auction21, auction22, auction23
     , auction24, auction25, auction26, auction27, auction28, auction29, auction30, auction31, auction32, auction33, auction34, auction35, auction36, auction39, auction40, auction41, auction42, auction43, auction44, auction45, auction46,
@@ -138,26 +161,92 @@ function App() {
     appId: "1:1020708355357:web:1645cf67c46496b51175f4"
   };
   if (!firebase.apps.length) {
-    var fireDb=firebase.initializeApp(firebaseConfig);
- }else {
-  var fireDb=firebase.app(); // if already initialized, use that one
- }
+    var fireDb = firebase.initializeApp(firebaseConfig);
+  } else {
+    var fireDb = firebase.app(); // if already initialized, use that one
+  }
   // var fireDb = initializeApp(firebaseConfig);
-  var fire=fireDb.database().ref();  
-  const [messageEmail,setMessageEmail]=React.useState({hasError:false,message:''});
-  const [messageMessage,setMessageMessage]=React.useState({hasError:false,message:''});
+  var fire = fireDb.database().ref();
+  const [messageEmail, setMessageEmail] = React.useState({ hasError: false, message: '' });
+  const [messageMessage, setMessageMessage] = React.useState({ hasError: false, message: '' });
+  const [deliver, setDeliver] = React.useState({ message: "", type: "" })
+  const [deliver2, setDeliver2] = React.useState({ message: "", type: "" });
+  const [emailMessageSub, setEmailSubMessage] = React.useState({ hasError: false, message: '' })
 
+  const [numPages, setNumPages] = React.useState(null);
+  const [pageNumber, setPageNumber] = React.useState(1);
+  const [openPdf, setOpenPdf] = React.useState(false)
+
+  function onDocumentLoadSuccess({ numPages }) {
+    setNumPages(numPages);
+  }
+
+  function CustomerDrawer() {
+    return (
+      <div className="custom-drawer">
+        <section className="banner">
+          <label htmlFor="menu-control" className="hamburger">
+            <i className="hamburger__icon"></i>
+            <i className="hamburger__icon"></i>
+            <i className="hamburger__icon"></i>
+          </label>
+
+          <input type="checkbox" id="menu-control" className="menu-control" />
+          <aside className="sidebar">
+
+            <nav className="sidebar__menu">
+              <a href="#home" className="nav__link active-link">Home</a>
+
+              <a href="#about" className="nav__link">About Me</a>
+
+
+              <a href="#portfolio" className="nav__link">Portfolio</a>
+
+              <a
+                onClick={() => { setOpen(true) }}
+                className="button button--ghost">Feadback</a>
+            </nav>
+
+            <label htmlFor="menu-control" className="sidebar__close"></label>
+
+
+          </aside>
+        </section>
+      </div>
+    )
+  }
   return (
     // <div>
     //   <Header/>
     //   <Main/>
     // </div>
     <div>
+
+      <Dialog open={openPdf}>
+        <Close onClick={() => {
+          setOpenPdf(false)
+        }} />
+        <div>
+          <Document
+            file="/images/meseret kifle cv new.pdf"
+
+            onLoadSuccess={onDocumentLoadSuccess}
+          >
+            <Page pageNumber={pageNumber} />
+          </Document>
+          <p>Page {pageNumber} of {numPages}</p>
+        </div>
+      </Dialog>
       <Helmet>
         <script src="./components/helper/js/main.js" type="text/javascript" />
       </Helmet>
       <header className="header" id="header">
         <nav className="nav container">
+          <div className="portifolio-container">
+            <CustomerDrawer />
+          </div>
+
+
           <a href="#" className="nav__logo">
             <img src="assets/img/logo.png" alt="" className="nav__logo-img" />
             M@K Tech
@@ -166,7 +255,7 @@ function App() {
           <div className="nav__menu" id="nav-menu">
             <ul className="nav__list">
               <li className="nav__item">
-                <a href="#home" className="nav__link active-link">Home</a>
+                <a href="#home" className="nav__link ">Home</a>
               </li>
 
               <li className="nav__item">
@@ -174,33 +263,21 @@ function App() {
               </li>
 
               <li className="nav__item">
-                <a href="#trick" className="nav__link">Portfolio</a>
+                <a href="#portfolio" className="nav__link">Portfolio</a>
               </li>
+              <button
+                onClick={() => { setOpen(true) }}
+                className="button button--ghost">Feadback</button>
 
-              <li className="nav__item">
-                <a href="#new" className="nav__link">Contact</a>
-              </li>
-
-              <button  
-              onClick={()=>{setOpen(true)}}
-              className="button button--ghost">Feadback</button>
             </ul>
 
-            <div className="nav__close" id="nav-close">
-              <i className='bx bx-x'></i>
-            </div>
 
-            <img src={Image1} alt="" className="nav__img" />
           </div>
-
-          <div className="nav__toggle" id="nav-toggle">
-            <i className='bx bx-grid-alt'></i>
-          </div>
-
         </nav>
       </header>
 
       <main className="main">
+
         <section className="home container" id="home">
           <div className="swiper home-swiper">
             <div className="swiper-wrapper">
@@ -226,13 +303,19 @@ function App() {
                     </p>
 
                     <div className="home__buttons">
-                      <a href="#" className="button">See Detail</a>
+                      <button>
+                      <a
+                        // onClick={() => {
+                        //   setOpenPdf(true);
+                        // }}
+                        href={PDF}
+                        download
+                        className="button">Download CV</a>
+                      </button>
                     </div>
                   </div>
                 </div>
               </section>
-
-
             </div>
           </div>
         </section>
@@ -298,9 +381,8 @@ function App() {
 
             <div className="trick__content">
               <img src={python} alt="" className="trick__img" />
-              <h3 className="trick__title">Python</h3>
+              <h3 className="trick__title">Python, Django</h3>
               <span className="trick__subtitle">
-                <Star style={{ color: "#e0880b" }} />
                 <Star style={{ color: "#e0880b" }} />
                 <Star style={{ color: "#e0880b" }} />
                 <Star style={{ color: "#e0880b" }} />
@@ -346,7 +428,7 @@ function App() {
 
             <div className="trick__content">
               <img src={reactjs} alt="" className="trick__img" />
-              <h3 className="trick__title">Reactjs</h3>
+              <h3 className="trick__title">Reactjs,React-native</h3>
               <span className="trick__subtitle">
                 <Star style={{ color: "#e0880b" }} />
                 <Star style={{ color: "#e0880b" }} />
@@ -362,7 +444,7 @@ function App() {
 
             <div className="trick__content">
               <img src={nodejs} alt="" className="trick__img" />
-              <h3 className="trick__title">Nodejs</h3>
+              <h3 className="trick__title">Nodejs,Express</h3>
               <span className="trick__subtitle">
                 <Star style={{ color: "#e0880b" }} />
                 <Star style={{ color: "#e0880b" }} />
@@ -375,6 +457,98 @@ function App() {
                 <i className='bx bx-cart-alt trick__icon'></i>
               </button>
             </div>
+            <div className="trick__content">
+              <img src={webdesign} alt="" className="trick__img" />
+              <h3 className="trick__title">javascript,CSS3,HTML5</h3>
+              <span className="trick__subtitle"></span>
+              <span className="trick__price">
+                <Star style={{ color: "#e0880b" }} />
+                <Star style={{ color: "#e0880b" }} />
+                <Star style={{ color: "#e0880b" }} />
+                <Star style={{ color: "#e0880b" }} />
+                <Star style={{ color: "#e0880b" }} />
+              </span>
+              <button className="button trick__button">
+                <i className='bx bx-cart-alt trick__icon'></i>
+              </button>
+            </div>
+            <div className="trick__content">
+              <img src={php} alt="" className="trick__img" />
+              <h3 className="trick__title">PHP</h3>
+              <span className="trick__subtitle"></span>
+              <span className="trick__price">
+                <Star style={{ color: "#e0880b" }} />
+                <Star style={{ color: "#e0880b" }} />
+                <Star style={{ color: "#e0880b" }} />
+                <Star style={{ color: "#e0880b" }} />
+              </span>
+              <button className="button trick__button">
+                <i className='bx bx-cart-alt trick__icon'></i>
+              </button>
+            </div>
+            <div className="trick__content">
+              <img src={Mongodb} alt="" className="trick__img" />
+              <h3 className="trick__title">mongoDB</h3>
+              <span className="trick__subtitle"></span>
+              <span className="trick__price">
+                <Star style={{ color: "#e0880b" }} />
+                <Star style={{ color: "#e0880b" }} />
+                <Star style={{ color: "#e0880b" }} />
+                <Star style={{ color: "#e0880b" }} />
+                <Star style={{ color: "#e0880b" }} />
+              </span>
+              <button className="button trick__button">
+                <i className='bx bx-cart-alt trick__icon'></i>
+              </button>
+            </div>
+            <div className="trick__content">
+              <img src={graphql} alt="" className="trick__img" />
+              <h3 className="trick__title">GraphQL</h3>
+              <span className="trick__subtitle"></span>
+              <span className="trick__price">
+                <Star style={{ color: "#e0880b" }} />
+                <Star style={{ color: "#e0880b" }} />
+                <Star style={{ color: "#e0880b" }} />
+                <Star style={{ color: "#e0880b" }} />
+                <Star style={{ color: "#e0880b" }} />
+              </span>
+              <button className="button trick__button">
+                <i className='bx bx-cart-alt trick__icon'></i>
+              </button>
+            </div>
+            <div className="trick__content">
+              <img src={material} alt="" className="trick__img" />
+              <h3 className="trick__title">Material-ui</h3>
+              <span className="trick__subtitle"></span>
+              <span className="trick__price">
+                <Star style={{ color: "#e0880b" }} />
+                <Star style={{ color: "#e0880b" }} />
+                <Star style={{ color: "#e0880b" }} />
+                <Star style={{ color: "#e0880b" }} />
+                <Star style={{ color: "#e0880b" }} />
+              </span>
+              <button className="button trick__button">
+                <i className='bx bx-cart-alt trick__icon'></i>
+              </button>
+            </div>
+            <div className="trick__content">
+              <img src={angular} alt="" className="trick__img" />
+              <h3 className="trick__title">Angular</h3>
+              <span className="trick__subtitle"></span>
+              <span className="trick__price">
+                <Star style={{ color: "#e0880b" }} />
+                <Star style={{ color: "#e0880b" }} />
+                <Star style={{ color: "#e0880b" }} />
+                <Star style={{ color: "#e0880b" }} />
+                <Star style={{ color: "#e0880b" }} />
+              </span>
+              <button className="button trick__button">
+                <i className='bx bx-cart-alt trick__icon'></i>
+              </button>
+            </div>
+            
+            
+
           </div>
         </section>
 
@@ -382,7 +556,7 @@ function App() {
           <div className="discount__container container grid">
             <div className="discount__data">
               <h2 className="discount__title">Focus on your work <br /> </h2>
-              <a href="#" className="button">Contact us</a>
+              <a href="#contact" className="button">Contact us</a>
             </div>
 
             <img src={nextjs} alt="" className="discount__img" />
@@ -391,10 +565,10 @@ function App() {
 
         <section className="section new" id="portfolio">
           <h2 className="section__title">Portfolio</h2>
-
+          
           <div className="new__container container ">
             <div className="swiper new-swiper">
-              <div className="portifolio-container">
+              <div className="portifolio1-container">
                 <div className="new__content ">
                   <div className="new__tag">New 2021</div>
                   <img src={image4} alt="" className="new__img" />
@@ -449,55 +623,79 @@ function App() {
           </div>
         </section>
         <Dialog open={open}>
-          <Close onClick={()=>{setOpen(false)}}/>
+          <Close onClick={() => { setOpen(false) }} />
           <div class="center">
             <h1>Feed back</h1>
+            {
+              deliver.message ? <Alert severity={deliver.type === "success" ? "success" : "error"}>{deliver.message} </Alert> : null
+            }
+
             <form>
               <div class="inputbox">
                 <input
-                onChange={(e)=>{
-                  setState({...state,email:e.target.value})
-                }}
-                 placeholder="email" type="text" required="required" />
-                
+                  value={state.email}
+                  onChange={(e) => {
+                    setState({ ...state, email: e.target.value })
+                  }}
+                  placeholder="email" type="text" required="required" />
+
               </div>
-              <span>{messageEmail.hasError? messageEmail.message:""}</span>
+              <span className="spanError">{messageEmail.hasError ? messageEmail.message : ""}</span>
               <div class="inputbox">
                 <textarea
-                onChange={(e)=>{
-                  setState({...state,message:e.target.value})
-                }}
-                 type="text" placeholder='message' required="required" />
-                 
-              </div>
-              <span>{messageMessage.hasError?messageMessage.message:""}</span>
-              <div class="inputbox">
-                <input type="button" value="submit" 
-                onClick={()=>{
-                  if(messageMessage.message==''){
-                    setMessageMessage({message:"message field is required",hasError:true});
-                  }
-                  if(messageMessage.message){
-                    setMessageMessage({message:"",hasError:false});
-                  }
-                  if(messageEmail.message==''){
-                    setMessageEmail({message:"email field is required",hasError:true});
-                  }
-                  if(messageEmail.message){
-                    setMessageEmail({message:"",hasError:false});
-                  }
+                  value={state.message}
+                  onChange={(e) => {
+                    setState({ ...state, message: e.target.value })
+                  }}
+                  type="text" placeholder='message' required="required" />
 
-                  if(state.email && state.message){
-                    fire.child('feedback').push(state,err=>{console.log(err)})
-                    setTimeout(() => {
-                      setState({
-                        email:"",
-                        message:"",
-                      })
-                    }, 1000);
-                  }
-                  
-                }}
+              </div>
+              <span className="spanError">{messageMessage.hasError ? messageMessage.message : ""}</span>
+              <div class="inputbox">
+                <input type="button" value="submit"
+                  onClick={() => {
+                    if (state.email === '') {
+                      setMessageEmail({ ...messageEmail, message: "email field is required", hasError: true });
+
+                    }
+                    if (state.email) {
+                      var re = /^(([^<>()[\]\\.,;:\s@"]+(.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+                      // return re.test(String(state.email).toLowerCase());
+                      if (re.test(state.email.toLowerCase())) {
+                        setMessageEmail({ ...messageEmail, message: "", hasError: false });
+                      }
+                      else {
+                        setMessageEmail({ message: "incorrect email e.g meseretkifle2@gmail.com", hasError: true });
+                      }
+
+                    }
+                    if (state.message === '') {
+                      setMessageMessage({ ...messageMessage, message: "message field is required", hasError: true });
+
+                    }
+                    if (state.message !== '') {
+                      setMessageMessage({ ...messageMessage, message: "", hasError: false });
+
+                    }
+
+
+                    if (state.email && state.message && !messageEmail.hasError) {
+                      fire.child('feedback').push(state, err => { console.log(err) }).then((res) => {
+                        if (res) {
+                          setDeliver({ message: "your message is successfully delivered", type: "success" });
+                        }
+                      }).catch(error => {
+                        setDeliver({ message: "check your internet connection", type: "error" })
+                      });
+                      setTimeout(() => {
+                        setState({
+                          email: "",
+                          message: "",
+                        })
+                      }, 5000);
+                    }
+
+                  }}
                 />
               </div>
             </form>
@@ -582,21 +780,61 @@ function App() {
         <section className="section newsletter">
           <div className="newsletter__container container">
             <h2 className="section__title">Our Newsletter</h2>
+            {
+              deliver2.message ? <Alert severity={deliver2.type === "success" ? "success" : "error"}>{deliver2.message} </Alert> : null
+            }
             <p className="newsletter__description">
               Promotion new products and sales. Directly to your inbox
             </p>
 
-            <form action="" className="newsletter__form">
-              <input type="text" placeholder="Enter your email" className="newsletter__input" />
-              <button className="button">
+            <div className="newsletter__form">
+              <input type="text"
+                value={subscribe}
+                onChange={(e) => {
+                  setSubscribe(e.target.value);
+                }}
+                placeholder="Enter your email" className="newsletter__input" />
+              <span className="spanError">{emailMessageSub.hasError ? emailMessageSub.message : null}</span>
+              <button className="button"
+                onClick={() => {
+                  if (subscribe === '') {
+                    setEmailSubMessage({ message: "email field is required", hasError: true });
+                  }
+                  if (subscribe) {
+                    var re = /^(([^<>()[\]\\.,;:\s@"]+(.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
+                    if (re.test(subscribe.toLowerCase())) {
+                      setEmailSubMessage({ message: "", hasError: false });
+                    }
+                    else {
+                      setEmailSubMessage({ message: "incorrect email e.g meseretkifle2@gmail.com", hasError: true });
+                    }
+
+                  }
+                  if (!emailMessageSub.hasError && subscribe) {
+                    fire.child('emailSubscribtion').push(subscribe, err => {
+                      setDeliver2({ message: "check your internet connection", type: "error" })
+                    }).then((res) => {
+                      if (res) {
+                        setDeliver2({ message: "subscribtion is successfuly", type: "success" });
+                      }
+                    }).catch(error => {
+                      setDeliver2({ message: "check your internet connection", type: "error" })
+                    });
+                    setTimeout(() => {
+                      setSubscribe('')
+                    }, 5000);
+                  }
+                }}
+              >
                 Subscribe
               </button>
-            </form>
+            </div>
           </div>
         </section>
       </main>
 
-      <footer className="footer section">
+      <footer className="footer section" id="contact">
         <div className="footer__container container grid">
           <div className="footer__content">
             <a href="#" className="footer__logo">
@@ -616,8 +854,6 @@ function App() {
               <a href="https://github.com/mesi473" target="_blank" className="footer__social-link">
                 <GitHub />
               </a>
-              <div>Phone : +251917897592</div>
-              <div>email : meseretkifle2@gmail.com</div>
             </div>
           </div>
 
@@ -657,7 +893,12 @@ function App() {
               <li>
                 <a href="#education" className="footer__link">Education</a>
               </li>
-
+              <li>
+                <div>Phone : +251917897592</div>
+              </li>
+              <li>
+                <div>email : meseretkifle2@gmail.com</div>
+              </li>
             </ul>
           </div>
         </div>
@@ -674,3 +915,5 @@ function App() {
 }
 
 export default App;
+
+
